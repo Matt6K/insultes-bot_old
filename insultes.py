@@ -1,6 +1,7 @@
 import discord
 import argparse
 from commands.insult import subparser_install as insult_subparser
+from commands.insult import list_subparser_install as list_subparser
 
 client = discord.Client()
 
@@ -12,11 +13,12 @@ def help_subparser(subparser):
     parser_help.set_defaults(func=helper)
 
 def helper(**kwargs):
-    return {'msg': ['**/insult `username`\n/help**']}
+    return {'msg': ['**/insult `username`\nlist `names`|`adjectives`\n/help**']}
 
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
     ('insult', insult_subparser),
+    ('list', list_subparser),
 ]
 
 COMMANDS = [
@@ -68,7 +70,7 @@ async def on_message(message):
             argument.message = message
             argument.client = client
             ret = argument.func(**vars(argument))
-        except ValueError as e:
+        except Exception as e:
             await client.send_message(message.channel, e)
             return
 
