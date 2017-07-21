@@ -52,7 +52,8 @@ NAMES = [{'masculin':'enculé', 'féminin':'enculée', 'poids': 50},
          {'masculin':'débile', 'féminin':'débile', 'poids': 50},
          {'masculin':'sodomite', 'féminin':'sodomite', 'poids': 50},
          {'masculin':'emmerdeur', 'féminin':'emmerdeuse', 'poids': 50},
-         {'masculin':None, 'féminin':'tarlouze', 'poids': 50}]
+         {'masculin':None, 'féminin':'tarlouze', 'poids': 50},
+         {'masculin':None, 'féminin':'putain', 'poids': 50}]
 ADJECTIVES = [{'masculin':'sale', 'féminin':'sale', 'poids': 10},
               {'masculin':'immonde', 'féminin':'immonde', 'poids': 10},
               {'masculin':'gros', 'féminin':'grosse', 'poids': 10},
@@ -94,8 +95,6 @@ def insult(username, client, message, **kwargs):
                     'Immonde salope <@291303759018065927>',
                     words_object_to_str(NAMES),
                     words_object_to_str(ADJECTIVES)]}
-#                    ' '.join(INSULTS),
-#                   ' '.join(ADJECTIVES)]}
 
 def list_subparser_install(subparser):
     parser_list = subparser.add_parser(
