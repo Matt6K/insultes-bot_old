@@ -1,10 +1,6 @@
-#!/opt/python3/bin/python3.5
-
 import discord
 import argparse
-from commands.add import subparser_install as addition_subparser
-from commands.hello import subparser_install as hello_subparser
-from commands.marvin import subparser_install as marvin_subparser
+from commands.insult import subparser_install as insult_subparser
 
 client = discord.Client()
 
@@ -16,16 +12,15 @@ def help_subparser(subparser):
     parser_help.set_defaults(func=helper)
 
 def helper(**kwargs):
-    return 'There is no help for now, fuck you :D'
+    return {'msg': ['**/insult `username`\n/help**']}
 
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
-    ('add', addition_subparser),
-    ('hello', hello_subparser),
+    ('insult', insult_subparser),
 ]
 
 COMMANDS = [
-    ('marvin', marvin_subparser)
+#('abuse', abuse_subparser)
 ]
 
 # Override error class (not exiting anymore)
@@ -78,15 +73,16 @@ async def on_message(message):
             return
 
         if ret:
-            try:
-                await client.send_message(ret['channel'], ret['msg'])
-            except KeyError:
-                await client.send_message(message.channel, ret['msg'])
+            for msg in ret['msg']:
+                try:
+                    await client.send_message(ret['channel'], msg)
+                except KeyError:
+                    await client.send_message(message.channel, msg)
 
 @client.event
 async def on_ready():
     print(client.user.name, ' ready !')
     print('------')
 
-client.run('Mjk4NDc1NDA0MTc4NDg5MzQ0.C8P4Zg.EliCgorGhuk2VUoNqtTdRrexvOM')
+client.run('MzM3OTAyMzg1NDU4NDQ2MzQ2.DFNt4g.NOXenryxEq5IvDdhs44Ijd--a8U')
 client.logout()
