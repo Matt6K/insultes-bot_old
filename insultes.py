@@ -1,7 +1,11 @@
+#!/opt/python3/bin/python3.5
+
+import os
 import discord
 import argparse
 from commands.insult import subparser_install as insult_subparser
 from commands.insult import list_subparser_install as list_subparser
+from commands.rename import subparser_install as rename_subparser
 
 client = discord.Client()
 
@@ -19,6 +23,7 @@ SIMPLE_COMMANDS = [
     ('help', help_subparser),
     ('insult', insult_subparser),
     ('list', list_subparser),
+    ('rename', rename_subparser),
 ]
 
 COMMANDS = [
@@ -69,22 +74,34 @@ async def on_message(message):
             argument = parser.parse_args(cmd)
             argument.message = message
             argument.client = client
+            argument.server = list(client.servers)[0]
             ret = argument.func(**vars(argument))
         except Exception as e:
             await client.send_message(message.channel, e)
             return
 
         if ret:
-            for msg in ret['msg']:
+            if 'rename' in ret:
                 try:
-                    await client.send_message(ret['channel'], msg)
-                except KeyError:
-                    await client.send_message(message.channel, msg)
+                    await client.change_nickname(ret['rename'], ret['new_nick'])
+                except discord.errors.Forbidden as e:
+                    ret['msg'] = e.text
+            if 'msg' in ret:
+                    try:
+                        await client.send_message(ret['channel'], ret['msg'])
+                    except KeyError:
+                        await client.send_message(message.channel, ret['msg'])
 
 @client.event
 async def on_ready():
+    f = open('/tmp/insults.pid', 'w')
+    f.write(str(os.getpid()))
+    f.close()
     print(client.user.name, ' ready !')
     print('------')
+
+    now_playing = discord.Game(name='eating your deads')
+    await client.change_presence(game=now_playing)
 
 client.run('MzM3OTAyMzg1NDU4NDQ2MzQ2.DFNt4g.NOXenryxEq5IvDdhs44Ijd--a8U')
 client.logout()
