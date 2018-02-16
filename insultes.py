@@ -18,7 +18,12 @@ def help_subparser(subparser):
     parser_help.set_defaults(func=helper)
 
 def helper(**kwargs):
-    return {'msg': ['**/insult `username`\nlist `names`|`adjectives`\n/help**']}
+    helps = '**'
+    for command in SIMPLE_COMMANDS:
+        helps += '/' + command[0] + '\n'
+    helps += '**'
+
+    return {'msg': helps}
 
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
@@ -53,9 +58,16 @@ for command in COMMANDS:
 
 
 async def is_this_message_funny(message):
-    msgs = ['mdrrrrrrr indeed', 'c\'est tres marrant mdrr', 'MDRRR', 'ptdrrrr', ':joy:']
+    reactions = ['mdrrrrrrr indeed',
+            'c\'est tres marrant mdrr',
+            'MDRRR',
+            'ptdrrrr',
+            ':joy:',
+            'LOL',
+    ]
+
     rand = randint(0, 100)
-    msg = msgs[rand % len(msgs)]
+    msg = reactions[rand % len(reactions)]
 
     values = {
         'mdr': 5,
@@ -75,7 +87,7 @@ async def is_this_message_funny(message):
 async def execute_command(message):
     try:
         cmd = message.content[1:].split(' ')
-        
+
         commands = []
         for item in SIMPLE_COMMANDS:
             commands.append(item[0])
@@ -107,7 +119,7 @@ async def execute_command(message):
             except KeyError:
                 await client.send_message(message.channel, ret['msg'])
 
-                
+
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
@@ -115,7 +127,7 @@ async def on_message(message):
         return
 
     await is_this_message_funny(message)
-        
+
     if message.content.startswith('/'):
         await execute_command(message)
 
