@@ -3,6 +3,7 @@
 import os
 import discord
 import argparse
+from random import randint
 from commands.insult import subparser_install as insult_subparser
 from commands.insult import list_subparser_install as list_subparser
 from commands.rename import subparser_install as rename_subparser
@@ -51,46 +52,79 @@ for command in COMMANDS:
     command[1](cmd_subparser)
 
 
+async def is_this_message_funny(message):
+    msgs = ['mdrrrrrrr indeed', 'c\'est tres marrant mdrr', 'MDRRR', 'ptdrrrr', ':joy:']
+    rand = randint(0, 100)
+    msg = msgs[rand % len(msgs)]
+
+    values = {
+        'mdr': 5,
+        'mdrrr': 50,
+        'MDR': 70,
+        'MDRRR': 99,
+        'ptdr': 10,
+        }
+
+    limit = 0
+    for lol in values:
+        if lol in message.content and values[lol] > limit:
+            limit = values[lol]
+    if rand < limit:
+        await client.send_message(message.channel, msg)
+
+async def execute_command(message):
+    try:
+        cmd = message.content[1:].split(' ')
+        
+        commands = []
+        for item in SIMPLE_COMMANDS:
+            commands.append(item[0])
+        for item in COMMANDS:
+            commands.append(item[0])
+        if cmd[0] not in commands:
+            usage = 'Command "{}" not found.\nUse /help to see available commands'.format(cmd[0])
+            await client.send_message(message.channel, usage)
+            return
+
+        argument = parser.parse_args(cmd)
+        argument.message = message
+        argument.client = client
+        argument.server = list(client.servers)[0]
+        ret = argument.func(**vars(argument))
+    except Exception as e:
+        await client.send_message(message.channel, e)
+        return
+
+    if ret:
+        if 'rename' in ret:
+            try:
+                await client.change_nickname(ret['rename'], ret['new_nick'])
+            except discord.errors.Forbidden as e:
+                ret['msg'] = e.text
+        if 'msg' in ret:
+            try:
+                await client.send_message(ret['channel'], ret['msg'])
+            except KeyError:
+                await client.send_message(message.channel, ret['msg'])
+
+                
 @client.event
 async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
 
+    await is_this_message_funny(message)
+        
     if message.content.startswith('/'):
-        try:
-            cmd = message.content[1:].split(' ')
+        await execute_command(message)
 
-            commands = []
-            for item in SIMPLE_COMMANDS:
-                commands.append(item[0])
-            for item in COMMANDS:
-                commands.append(item[0])
-            if cmd[0] not in commands:
-                usage = 'Command "{}" not found.\nUse /help to see available commands'.format(cmd[0])
-                await client.send_message(message.channel, usage)
-                return
-
-            argument = parser.parse_args(cmd)
-            argument.message = message
-            argument.client = client
-            argument.server = list(client.servers)[0]
-            ret = argument.func(**vars(argument))
-        except Exception as e:
-            await client.send_message(message.channel, e)
-            return
-
-        if ret:
-            if 'rename' in ret:
-                try:
-                    await client.change_nickname(ret['rename'], ret['new_nick'])
-                except discord.errors.Forbidden as e:
-                    ret['msg'] = e.text
-            if 'msg' in ret:
-                    try:
-                        await client.send_message(ret['channel'], ret['msg'])
-                    except KeyError:
-                        await client.send_message(message.channel, ret['msg'])
+@client.event
+async def on_message_edit(before, after):
+    if after.author == client.user:
+        return
+    if after.content.startswith('/'):
+        await execute_command(after)
 
 @client.event
 async def on_ready():
