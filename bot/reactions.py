@@ -21,7 +21,7 @@ async def funny(message):
 
     values = {
         'mdr': 5,
-        'mdrrr': 50,
+        'mdrrr': 80,
         'MDR': 70,
         'MDRRR': 99,
         'ptdr': 10,
@@ -29,7 +29,8 @@ async def funny(message):
 
     limit = 0
     for lol in values:
-        if lol in message.content and values[lol] > limit:
-            limit = values[lol]
+        if lol in message.content or lol.capitalize() in message.content:
+            if values[lol] > limit:
+                limit = values[lol]
     if rand < limit:
         await send_message(msg)
