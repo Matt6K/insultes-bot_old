@@ -1,14 +1,21 @@
 #!/opt/python3/bin/python3.5
 
 import os
-import discord
 import argparse
-from random import randint
-from commands.insult import subparser_install as insult_subparser
-from commands.insult import list_subparser_install as list_subparser
-from commands.rename import subparser_install as rename_subparser
+import discord
 
-client = discord.Client()
+
+from bot.client import (
+    client,
+    send_message,
+    change_game,
+)
+
+from bot.reactions import react
+from bot.commands.insult import subparser_install as insult_subparser
+from bot.commands.list import subparser_install as list_subparser
+from bot.commands.rename import subparser_install as rename_subparser
+
 
 def help_subparser(subparser):
     parser_help = subparser.add_parser(
@@ -56,34 +63,6 @@ for command in COMMANDS:
     cmd_subparser = cmd_parser.add_subparsers(dest='sub_command', help='The {0} sub-command'.format(command[0]))
     command[1](cmd_subparser)
 
-
-async def is_this_message_funny(message):
-    reactions = ['mdrrrrrrr indeed',
-            'c\'est tres marrant mdrr',
-            'MDRRR',
-            'ptdrrrr',
-            ':joy:',
-            'LOL',
-    ]
-
-    rand = randint(0, 100)
-    msg = reactions[rand % len(reactions)]
-
-    values = {
-        'mdr': 5,
-        'mdrrr': 50,
-        'MDR': 70,
-        'MDRRR': 99,
-        'ptdr': 10,
-        }
-
-    limit = 0
-    for lol in values:
-        if lol in message.content and values[lol] > limit:
-            limit = values[lol]
-    if rand < limit:
-        await client.send_message(message.channel, msg)
-
 async def execute_command(message):
     try:
         cmd = message.content[1:].split(' ')
@@ -95,48 +74,36 @@ async def execute_command(message):
             commands.append(item[0])
         if cmd[0] not in commands:
             usage = 'Command "{}" not found.\nUse /help to see available commands'.format(cmd[0])
-            await client.send_message(message.channel, usage)
+            await send_message(usage)
             return
 
         argument = parser.parse_args(cmd)
         argument.message = message
-        argument.client = client
-        argument.server = list(client.servers)[0]
-        ret = argument.func(**vars(argument))
+        await argument.func(**vars(argument))
     except Exception as e:
-        await client.send_message(message.channel, e)
+        await send_message(e)
         return
 
-    if ret:
-        if 'rename' in ret:
-            try:
-                await client.change_nickname(ret['rename'], ret['new_nick'])
-            except discord.errors.Forbidden as e:
-                ret['msg'] = e.text
-        if 'msg' in ret:
-            try:
-                await client.send_message(ret['channel'], ret['msg'])
-            except KeyError:
-                await client.send_message(message.channel, ret['msg'])
-
-
-@client.event
-async def on_message(message):
+async def on_event(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
+    client.channel = message.channel
+    client.server = list(client.servers)[0]
 
-    await is_this_message_funny(message)
+    await react(message)
 
     if message.content.startswith('/'):
         await execute_command(message)
 
+
+@client.event
+async def on_message(message):
+    await on_event(message)
+
 @client.event
 async def on_message_edit(before, after):
-    if after.author == client.user:
-        return
-    if after.content.startswith('/'):
-        await execute_command(after)
+    await on_event(after)
 
 @client.event
 async def on_ready():
@@ -147,7 +114,8 @@ async def on_ready():
     print('------')
 
     now_playing = discord.Game(name='eating your deads')
-    await client.change_presence(game=now_playing)
+    await change_game(game=now_playing)
 
-client.run('MzM3OTAyMzg1NDU4NDQ2MzQ2.DFNt4g.NOXenryxEq5IvDdhs44Ijd--a8U')
-client.logout()
+def main():
+    client.run('MzM3OTAyMzg1NDU4NDQ2MzQ2.DFNt4g.NOXenryxEq5IvDdhs44Ijd--a8U')
+    client.logout()

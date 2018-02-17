@@ -1,14 +1,3 @@
-import json
-import random
-
-def subparser_install(subparser):
-    parser_insult = subparser.add_parser(
-        'insult',
-        help='Insult someone',
-    )
-    parser_insult.set_defaults(func=insult)
-    parser_insult.add_argument('username', type=str, help='The user to insult')
-
 NAMES = [{'masculin':'enculé', 'féminin':'enculée', 'poids': 50},
          {'masculin':'bâtard', 'féminin':'bâtarde', 'poids': 50},
          {'masculin':'connard', 'féminin':'connasse', 'poids': 50},
@@ -54,6 +43,7 @@ NAMES = [{'masculin':'enculé', 'féminin':'enculée', 'poids': 50},
          {'masculin':'emmerdeur', 'féminin':'emmerdeuse', 'poids': 50},
          {'masculin':None, 'féminin':'tarlouze', 'poids': 50},
          {'masculin':None, 'féminin':'putain', 'poids': 50}]
+
 ADJECTIVES = [{'masculin':'sale', 'féminin':'sale', 'poids': 10},
               {'masculin':'immonde', 'féminin':'immonde', 'poids': 10},
               {'masculin':'gros', 'féminin':'grosse', 'poids': 10},
@@ -72,46 +62,3 @@ ADJECTIVES = [{'masculin':'sale', 'féminin':'sale', 'poids': 10},
               {'masculin':'sombre', 'féminin':'sombre', 'poids':10},
               {'masculin':'effroyable', 'féminin':'effroyable', 'poids':10},
               {'masculin':'terrible', 'féminin':'terrible', 'poids':10},]
-
-def words_object_to_str(words_object):
-    insult_str = ''
-    for name in words_object:
-        masculin = name['masculin']
-        feminin = name['féminin']
-        poids = name['poids']
-        if masculin is not None and feminin is not None:
-            if masculin != feminin:
-                insult_str = '{0}\n{1}\t\tpoids:{2}\n{3}\t\tpoids:{4}'.format(insult_str, masculin, poids, feminin, poids)
-            else:
-                insult_str = '{0}\n{1}\t\tpoids:{2}'.format(insult_str, masculin, poids)
-        if masculin is not None and feminin is None:
-            insult_str = '{0}\n{1}\t\tpoids:{2}'.format(insult_str, masculin, poids)
-        if masculin is None and feminin is not None:
-            insult_str = '{0}\n{1}\t\tpoids:{2}'.format(insult_str, feminin, poids)
-    return insult_str
-
-def insult(username, client, message, **kwargs):
-    return {'msg': ['{0}: sale batard'.format(username),
-                    'Immonde salope <@291303759018065927>',
-                    words_object_to_str(NAMES),
-                    words_object_to_str(ADJECTIVES)]}
-
-def list_subparser_install(subparser):
-    parser_list = subparser.add_parser(
-        'list',
-        help='List a list of words used by the bot, either names or adjectives',
-    )
-    parser_list.set_defaults(func=list)
-    parser_list.add_argument('dict_type', type=str, help='The dict of objects to display', choices=['names', 'adjectives', 'all'])
-
-def list(dict_type, client, message, **kwargs):
-    if dict_type == 'names':
-        return {'msg': ['**The names used to form the insults**:\n',
-                        words_object_to_str(NAMES)]}
-    elif dict_type == 'adjectives':
-        return {'msg': ['**The adjectives used to form the insults**:\n',
-                        words_object_to_str(ADJECTIVES)]}
-    else:
-        return {'msg': ['**The names and adjectives used to form the insults**:\n',
-                        words_object_to_str(NAMES),
-                        words_object_to_str(ADJECTIVES)]}
