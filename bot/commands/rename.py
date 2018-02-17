@@ -22,7 +22,7 @@ async def rename(username, nickname, **kwargs):
 
     user = client.server.get_member_named(username)
     if not user:
-        send_message('No user')
+        await send_message('No user')
         return
 
     try:
