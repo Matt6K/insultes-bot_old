@@ -24,16 +24,29 @@ def help_subparser(subparser):
     )
     parser_help.set_defaults(func=helper)
 
-def helper(**kwargs):
+async def helper(**kwargs):
     helps = '**'
     for command in SIMPLE_COMMANDS:
         helps += '/' + command[0] + '\n'
     helps += '**'
 
-    return {'msg': helps}
+    await send_message(helps)
+
+
+def ping_subparser(subparser):
+    parser_ping = subparser.add_parser(
+        'ping',
+        help='Ping',
+    )
+    parser_ping.set_defaults(func=ping)
+
+async def ping(**kwargs):
+    await send_message('pong')
+
 
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
+    ('ping', ping_subparser),
     ('insult', insult_subparser),
     ('list', list_subparser),
     ('rename', rename_subparser),
