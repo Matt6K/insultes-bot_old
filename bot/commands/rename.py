@@ -21,6 +21,10 @@ async def rename(username, nickname, **kwargs):
         return {'msg': 'You need a username and a nickname'}
 
     user = client.server.get_member_named(username)
+    if not user:
+        await send_message('No user')
+        return
+
     try:
         await change_nickname(user, nickname)
         msg = '{} is now called {} :D'.format(username, nickname)
