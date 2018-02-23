@@ -13,7 +13,7 @@ def subparser_install(subparser):
     parser_insult.add_argument('username', nargs='*', type=str, help='The user to insult')
 
 
-async def insult(username, **kwargs):
+async def insult(username, message, **kwargs):
     username = ' '.join(username)
     user = client.server.get_member_named(username)
 
@@ -44,4 +44,5 @@ async def insult(username, **kwargs):
     elif f == True:
         insult += '{} {}'.format(adj['féminin'], name['féminin'])
 
+    await client.delete_message(message)
     await send_message(insult)
