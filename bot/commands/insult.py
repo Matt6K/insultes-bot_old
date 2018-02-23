@@ -14,8 +14,6 @@ def subparser_install(subparser):
 
 
 async def insult(username, **kwargs):
-    # insult = 'No insult generator yet, <@291303759018065927> is playing Diablo3 instead of programming it'
-
     username = ' '.join(username)
     user = client.server.get_member_named(username)
 

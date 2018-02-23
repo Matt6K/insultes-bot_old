@@ -90,7 +90,12 @@ async def execute_command(message):
             await send_message(usage)
             return
 
-        argument = parser.parse_args(cmd)
+        try:
+            argument = parser.parse_args(cmd)
+        except:
+            await send_message('Exception was thrown cos of arguments but Idk how to get the error in here')
+            return
+
         argument.message = message
         await argument.func(**vars(argument))
     except Exception as e:
