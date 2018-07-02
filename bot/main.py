@@ -44,9 +44,21 @@ async def ping(**kwargs):
     await send_message('pong')
 
 
+def cute_chat_subparser(subparser):
+    parser_cute_chat = subparser.add_parser(
+        'cute',
+        help='Cute chat dafranAYAYA',
+    )
+    parser_cute_chat.set_defaults(func=cute_chat)
+
+async def cute_chat(**kwargs):
+    await send_message('CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750>')
+
+
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
     ('ping', ping_subparser),
+    ('cute', cute_chat_subparser),
     ('insult', insult_subparser),
     ('list', list_subparser),
     ('rename', rename_subparser),
