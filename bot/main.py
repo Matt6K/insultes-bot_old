@@ -15,6 +15,7 @@ from bot.reactions import react
 from bot.commands.insult import subparser_install as insult_subparser
 from bot.commands.list import subparser_install as list_subparser
 from bot.commands.rename import subparser_install as rename_subparser
+from bot.commands.test import subparser_install as test_subparser
 
 
 def help_subparser(subparser):
@@ -54,11 +55,31 @@ def cute_chat_subparser(subparser):
 async def cute_chat(**kwargs):
     await send_message('CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750>')
 
+    
+def printf_subparser(subparser):
+    parser_printf = subparser.add_parser(
+        'printf',
+        help='How long since Frazou said he will upload his printf "tonight"',
+    )
+    parser_printf.set_defaults(func=printf)
+
+async def printf(message, **kwargs):
+    from datetime import datetime, timedelta
+
+    time1 = datetime.strptime('Nov 10 2018 4:00PM', '%b %d %Y %I:%M%p')
+    time2 = datetime.now()
+    diff = time2 - time1
+    hours = diff / timedelta(hours=1)
+
+    await client.delete_message(message)
+    await send_message('On attend le printf de frazou depuis {} heures. DECEPTION, FRAZOU LACHEUR'.format(int(hours)))
 
 SIMPLE_COMMANDS = [
     ('help', help_subparser),
+    ('test', test_subparser),
     ('ping', ping_subparser),
     ('cute', cute_chat_subparser),
+    ('printf', printf_subparser),
     ('insult', insult_subparser),
     ('list', list_subparser),
     ('rename', rename_subparser),
@@ -104,10 +125,13 @@ async def execute_command(message):
 
         try:
             argument = parser.parse_args(cmd)
-        except:
-            await send_message('Exception was thrown cos of arguments but Idk how to get the error in here')
+        except ValueError as e:
+            await send_message('Exception was thrown cos of arguments: {}'.format(e))
             return
-
+        except:
+            await send_message('Unknown error, niquez vous jsais pas ce que c\'est')
+            return
+            
         argument.message = message
         await argument.func(**vars(argument))
     except Exception as e:

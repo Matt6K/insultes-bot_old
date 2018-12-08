@@ -22,3 +22,16 @@ async def change_nickname(user, nickname):
         await client.change_nickname(user, nickname)
     except discord.errors.Forbidden:
         raise
+
+def get_user(username):
+    user = None
+    username = ' '.join(username)
+    if username[0] == '<':
+        username = username[3:-1]
+        
+    members = client.server.members
+    for member in members:
+        if username == member.id or username == member.nick:
+            user = member
+
+    return user

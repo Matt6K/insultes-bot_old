@@ -40,8 +40,9 @@ async def funny(message):
 
 async def bite(message):
     tmp = message.content.replace(' ', '')
-    print(tmp)
-    msg = tmp.translate(None, string.punctuation)
+    for char in string.punctuation:
+        tmp = tmp.replace(char, '')
+    msg = tmp
 
     bite = re.compile('b+i+t+e+')
     chibre = re.compile('c+h+i+b+r+e+')

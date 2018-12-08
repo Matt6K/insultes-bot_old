@@ -9,7 +9,6 @@ rm -rf build/ dist/ bot.egg-info/
 python setup.py sdist
 pip install -U dist/bot*
 rm -rf build/ dist/ bot.egg-info/
-
-clear
-sleep 5
+sleep 1
+rehash
 nohup insult_bot &
