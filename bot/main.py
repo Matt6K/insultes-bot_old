@@ -16,6 +16,7 @@ from bot.commands.insult import subparser_install as insult_subparser
 from bot.commands.list import subparser_install as list_subparser
 from bot.commands.rename import subparser_install as rename_subparser
 from bot.commands.test import subparser_install as test_subparser
+from bot.commands.random import subparser_install as random_subparser
 
 
 def help_subparser(subparser):
@@ -55,7 +56,7 @@ def cute_chat_subparser(subparser):
 async def cute_chat(**kwargs):
     await send_message('CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750> CUTE CHAT <:dafranAYAYA:462648524706676750>')
 
-    
+
 def printf_subparser(subparser):
     parser_printf = subparser.add_parser(
         'printf',
@@ -83,6 +84,7 @@ SIMPLE_COMMANDS = [
     ('insult', insult_subparser),
     ('list', list_subparser),
     ('rename', rename_subparser),
+    ('random', random_subparser),
 ]
 
 COMMANDS = [
@@ -131,7 +133,7 @@ async def execute_command(message):
         except:
             await send_message('Unknown error, niquez vous jsais pas ce que c\'est')
             return
-            
+
         argument.message = message
         await argument.func(**vars(argument))
     except Exception as e:
@@ -167,7 +169,7 @@ async def on_ready():
     print(client.user.name, ' ready !')
     print('------')
 
-    now_playing = discord.Game(name='eating your deads')
+    now_playing = discord.Game(name='FIOU FIOU BIENTOT LE SKI OUI')
     await change_game(game=now_playing)
 
 def main():

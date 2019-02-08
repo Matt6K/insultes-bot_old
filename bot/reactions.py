@@ -1,5 +1,6 @@
 from random import randint
 from bot.client import client, send_message
+from discord.utils import get
 import re
 import string
 
@@ -9,6 +10,7 @@ async def react(message):
     """
     await funny(message)
     await bite(message)
+    await pd(message)
 
 async def funny(message):
     reactions = ['mdrrrrrrr indeed',
@@ -54,3 +56,25 @@ async def bite(message):
         if result:
             await client.delete_message(message)
 
+async def allah(message):
+    tmp = message.content.lower().replace(' ', '')
+    for char in string.punctuation:
+        tmp = tmp.replace(char, '')
+    msg = tmp
+
+    print(msg)
+
+    if 'allah' in msg:
+        await send_message('Pas de terrorisme ici.')
+        await client.delete_message(message)
+
+async def pd(message):
+    tmp = message.content.lower()
+    for char in string.punctuation:
+        if char != ' ':
+            tmp = tmp.replace(char, '')
+
+    emoji = get(client.get_all_emojis(), name='kappapride')
+    msg = tmp
+    if 'pd' in msg:
+        return await client.add_reaction(message, emoji)

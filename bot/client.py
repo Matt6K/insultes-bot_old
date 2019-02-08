@@ -9,6 +9,10 @@ async def send_message(message, channel=None):
     else:
         messages = message
     for msg in messages:
+
+        #for christmas
+        msg = ':snowboarder: ' + msg + ' :skier:'
+
         if channel:
             await client.send_message(channel, msg)
         else:
@@ -28,7 +32,7 @@ def get_user(username):
     username = ' '.join(username)
     if username[0] == '<':
         username = username[3:-1]
-        
+
     members = client.server.members
     for member in members:
         if username == member.id or username == member.nick:
