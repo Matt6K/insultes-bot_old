@@ -169,9 +169,9 @@ async def on_ready():
     print(client.user.name, ' ready !')
     print('------')
 
-    now_playing = discord.Game(name='FIOU FIOU BIENTOT LE SKI OUI')
+    now_playing = discord.Game(name='Overwatch')
     await change_game(game=now_playing)
 
 def main():
-    client.run('MzM3OTAyMzg1NDU4NDQ2MzQ2.DFNt4g.NOXenryxEq5IvDdhs44Ijd--a8U')
+    client.run('token')
     client.logout()

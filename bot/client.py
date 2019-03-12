@@ -10,8 +10,8 @@ async def send_message(message, channel=None):
         messages = message
     for msg in messages:
 
-        #for christmas
-        msg = ':snowboarder: ' + msg + ' :skier:'
+        # #add emoji for events
+        # msg = ':snowboarder: ' + msg + ' :skier:'
 
         if channel:
             await client.send_message(channel, msg)
