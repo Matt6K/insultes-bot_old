@@ -172,6 +172,5 @@ async def on_ready():
     now_playing = discord.Game(name='Overwatch')
     await change_game(game=now_playing)
 
-def main():
-    client.run('token')
-    client.logout()
+client.run('')
+client.logout()
