@@ -2,8 +2,8 @@ import json
 import random
 import discord
 
-from bot.client import client, send_message, change_nickname, get_user
-from bot.commands.insult import gen_insult
+from utils.client import client, send_message, change_nickname, get_user
+from commands.insult import gen_insult
 
 def subparser_install(subparser):
     parser_rename = subparser.add_parser(

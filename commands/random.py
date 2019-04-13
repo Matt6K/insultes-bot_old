@@ -2,7 +2,7 @@ import json
 import random
 import discord
 
-from bot.client import client, send_message
+from utils.client import client, send_message
 
 def subparser_install(subparser):
     parser_random = subparser.add_parser(

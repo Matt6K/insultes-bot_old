@@ -1,15 +1,15 @@
 from random import randint
 
-from bot.client import client, send_message, get_user
-from bot.commands.insults_table import NAMES, ADJECTIVES
+from utils.client import client, send_message, get_user
+from commands.insults_table import NAMES, ADJECTIVES
 
 def gen_insult():
     m = False                   # masculin
     f = False                   # féminin
-    
+
     name = NAMES[randint(0, 100) % len(NAMES)]
     adj = ADJECTIVES[randint(0, 100) % len(ADJECTIVES)]
-    
+
     if name['masculin'] and not name['féminin']:
         m = True
     elif not name['masculin'] and name['féminin']:
@@ -39,14 +39,13 @@ def subparser_install(subparser):
 async def send_insult(username, message, **kwargs):
     username = ' '.join(username)
     user = get_user(username)
-
     #use user id if found
     if user:
         insult = '<@{}> '.format(user.id)
     else:
         insult = '{} '.format(username)
-    
+
     insult += gen_insult()
 
-    await client.delete_message(message)
+    await message.delete()
     await send_message(insult)

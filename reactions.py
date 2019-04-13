@@ -1,5 +1,5 @@
 from random import randint
-from bot.client import client, send_message
+from utils.client import client, send_message
 from discord.utils import get
 import re
 import string
@@ -54,7 +54,7 @@ async def bite(message):
     for exp in regexp:
         result = exp.match(msg.lower())
         if result:
-            await client.delete_message(message)
+            await message.delete()
 
 async def allah(message):
     tmp = message.content.lower().replace(' ', '')
@@ -66,7 +66,7 @@ async def allah(message):
 
     if 'allah' in msg:
         await send_message('Pas de terrorisme ici.')
-        await client.delete_message(message)
+        await message.delete()
 
 async def pd(message):
     tmp = message.content.lower()
@@ -74,7 +74,7 @@ async def pd(message):
         if char != ' ':
             tmp = tmp.replace(char, '')
 
-    emoji = get(client.get_all_emojis(), name='kappapride')
+    emoji = get(client.emojis, name='kappapride')
     msg = tmp
     if 'pd' in msg:
-        return await client.add_reaction(message, emoji)
+        return await message.add_reaction(message, emoji)

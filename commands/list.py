@@ -1,5 +1,5 @@
-from bot.client import send_message
-from bot.commands.insults_table import NAMES, ADJECTIVES
+from utils.client import send_message
+from commands.insults_table import NAMES, ADJECTIVES
 
 def subparser_install(subparser):
     parser_list = subparser.add_parser(
